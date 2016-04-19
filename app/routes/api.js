@@ -1,7 +1,20 @@
 var User = require('../models/user');
 var config = require('../../config');
+var jsonwebtoken = require('jsonwebtoken');
 
 var secretKey = config.secretKey;
+
+function createToken(user) {
+	var token = jsonwebtoken.sign({
+		_id: user._id,
+		name: user.name,
+		username: user.username
+	}, secretKey, {
+		expiresInMinute: 1400
+	});
+
+	return token;
+}
 
 module.exports = function (app, express) {
 	var api = express.Router();
@@ -16,6 +29,7 @@ module.exports = function (app, express) {
 		user.save(function (err) {
 			if (err) {
 				res.send(err);
+				return;
 			}
 
 			res.json({ message: "User has been created" });
@@ -30,6 +44,40 @@ module.exports = function (app, express) {
 
 			res.json(users);
 		});
+	});
+
+	api.post('/login', function (req, res) {
+		User.findOne({
+			username: req.body.username
+	 	}).select('password').exec(function (err, user) {
+	 		if (err) {
+	 			throw err;
+	 		}
+
+	 		if (!user) {
+	 			res.send({
+	 				message: "User doesnt exist"
+	 			});
+	 		} else if (user) {
+	 			var validPassword = user.comparePassword(req.body.password);
+
+	 			if (!validPassword) {
+	 				res.send({
+	 					message: "Invalid Password"
+	 				})
+	 			} else {
+	 				/// token
+
+	 				var token = createToken(user);
+
+	 				res.json({
+	 					success: true,
+	 					message: "Successfuly login!",
+	 					token: token
+	 				});
+	 			}
+	 		}
+	 	});
 	});
 
 	return api;
