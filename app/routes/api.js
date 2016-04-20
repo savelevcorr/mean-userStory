@@ -142,8 +142,13 @@ module.exports = function (app, express) {
 				}
 
 				res.json(stories);
-			})	
+			});	
 		});
+
+	api.get("/me", function (req, res) {
+		res.json(req.decoded)
+	})
+
 
 	return api;
 };
