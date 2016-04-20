@@ -117,5 +117,10 @@ module.exports = function (app, express) {
 		}
 	});
 
+	// if authentication is success redirect to home route
+	api.get('/', function (req, res) {
+		res.json("Hello World!");
+	});
+
 	return api;
 };
