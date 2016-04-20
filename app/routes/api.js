@@ -4,6 +4,10 @@ var jsonwebtoken = require('jsonwebtoken');
 
 var secretKey = config.secretKey;
 
+/**
+* Create unique token using by secretKey
+* @return [String]
+*/
 function createToken(user) {
 	var token = jsonwebtoken.sign({
 		_id: user._id,
@@ -19,6 +23,7 @@ function createToken(user) {
 module.exports = function (app, express) {
 	var api = express.Router();
 
+	// invoke when route to /api/singup
 	api.post('/singup', function (req, res) {
 		var user = new User({
 			name: req.body.name,
@@ -36,6 +41,7 @@ module.exports = function (app, express) {
 		});
 	});
 
+	// invoke when route to /api/users
 	api.get('/users', function (req, res) {
 		User.find({}, function (err, users) {
 			if (err) {
@@ -46,6 +52,7 @@ module.exports = function (app, express) {
 		});
 	});
 
+	// invoke when route to api/login
 	api.post('/login', function (req, res) {
 		User.findOne({
 			username: req.body.username
