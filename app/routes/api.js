@@ -88,7 +88,7 @@ module.exports = function (app, express) {
 	});
 
     // Custon middleware (authenticate checker)
-	app.use(function (req, res, next) {
+	api.use(function (req, res, next) {
 		console.log("Somebody just came to your app!");
 
         // store token
