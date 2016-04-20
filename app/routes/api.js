@@ -130,9 +130,20 @@ module.exports = function (app, express) {
 					res.send(err);
 					return;
 				}
+
 				res.json({message: "New Stroy created!"}); 
 			});
 		})
+		.get(function (req, res) {
+			Stroy.find({creator: req.decoded.id}, function (err, stories) {
+				if (err) {
+					res.send(err);
+					return;
+				}
+
+				res.json(stories);
+			})	
+		});
 
 	return api;
 };
